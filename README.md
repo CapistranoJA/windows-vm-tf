@@ -20,5 +20,5 @@ The VM will also serve as a Terraform practice environment, allowing me to exper
 ### Virtualization
 
 * **Hypervisor** : QEMU/KVM
-* **Provider** : TBD
+* **Provider** : dmacvicar/libvirt
 

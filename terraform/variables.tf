@@ -15,3 +15,15 @@ variable pool_path {
   type = string
   default = "/data/lib/libvirt/images/windows-11"
 }
+
+variable "vm_name" {
+  description = "Name of the virtual machine"
+  type = string
+  default = "windows-11-workstation"
+}
+
+variable "disk_size" {
+  description = "Size of the virtual machine disk in GB"
+  type = number
+  default = 80
+}

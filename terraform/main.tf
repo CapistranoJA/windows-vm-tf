@@ -9,13 +9,13 @@ resource "libvirt_pool" "windows" {
   target = {
     path = var.pool_path
   }
-  
+
 }
 
 resource "libvirt_volume" "windows_disk" {
-  name = "${var.vm_name}.qcow2"
-  pool = libvirt_pool.windows.name
-  capacity = var.disk_size
+  name          = "${var.vm_name}.qcow2"
+  pool          = libvirt_pool.windows.name
+  capacity      = var.disk_size
   capacity_unit = "GiB"
   target = {
     format = {
@@ -25,7 +25,7 @@ resource "libvirt_volume" "windows_disk" {
 }
 
 resource "libvirt_network" "windows_network" {
-  name = var.network_name
+  name      = var.network_name
   autostart = true
   domain = {
     name = var.network_domain
@@ -41,7 +41,7 @@ resource "libvirt_network" "windows_network" {
     }
   }
   ips = [{
-    family = "ipv4"
+    family  = "ipv4"
     address = cidrhost(var.network_cidr, 1)
     netmask = cidrnetmask(var.network_cidr)
 
@@ -56,33 +56,33 @@ resource "libvirt_network" "windows_network" {
 }
 
 resource "libvirt_domain" "windows_vm" {
-  name = var.vm_name
-  memory = var.memory
+  name        = var.vm_name
+  memory      = var.memory
   memory_unit = "MiB"
-  vcpu = var.vcpus
-  type = "kvm"
+  vcpu        = var.vcpus
+  type        = "kvm"
 
   autostart = false
-  
-  cpu ={
+
+  cpu = {
     mode = "host-passthrough"
   }
 
   os = {
-    type = "hvm"
-    type_arch = "x86_64"
+    type         = "hvm"
+    type_arch    = "x86_64"
     type_machine = "q35"
 
-    firmware = "efi"
-    loader = "/usr/share/OVMF/OVMF_CODE.fd"
+    firmware        = "efi"
+    loader          = "/usr/share/OVMF/OVMF_CODE.fd"
     loader_readonly = "yes"
-    loader_type = "pflash"
+    loader_type     = "pflash"
 
-    nv_ram ={
-      nv_ram = "/var/lib/libvirt/qemu/nvram/${var.vm_name}_VARS.fd"
-      template = "/usr/share/OVMF/OVMF_VARS.fd"
+    nv_ram = {
+      nv_ram   = "/var/lib/libvirt/qemu/nvram/${var.vm_name}_VARS.fd"
+      template = "/usr/share/edk2/ovmf/OVMF_VARS.fd"
     }
- 
+
     boot_devices = [
       {
         dev = "hd"
@@ -96,67 +96,67 @@ resource "libvirt_domain" "windows_vm" {
   features = {
     acpi = true
   }
-  
+
   devices = {
-    disks = [ {
+    disks = [{
       device = "disk"
       source = {
         volume = {
-          pool = libvirt_pool.windows.name
+          pool   = libvirt_pool.windows.name
           volume = libvirt_volume.windows_disk.name
         }
       }
       target = {
-         dev = "vda", 
-         bus = "virtio"
+        dev = "vda",
+        bus = "virtio"
       }
-    }, 
-    {
-      device = "cdrom"
-      read_only = true
-      source = {
-        file = {
-          file = var.windows_iso_path
+      },
+      {
+        device    = "cdrom"
+        read_only = true
+        source = {
+          file = {
+            file = var.windows_iso_path
+          }
+        }
+        target = {
+          dev = "sda"
+          bus = "sata"
+        }
+      },
+      {
+        device    = "cdrom"
+        read_only = true
+        source = {
+          file = {
+            file = var.virtio_iso_path
+          }
+        }
+        target = {
+          dev = "sdb"
+          bus = "sata"
         }
       }
-      target = {
-        dev = "sda"
-        bus = "sata"
-      }
-    },
-    {
-      device = "cdrom"
-      read_only = true
-      source = {
-        file = {
-          file = var.virtio_iso_path
-        }
-      }
-      target = {
-        dev = "sdb"
-        bus = "sata"
-      }
-    }
     ]
-  interfaces = [
-    {
-      source = {
-        network = {
-          network = libvirt_network.windows_network.name
+    interfaces = [
+      {
+        source = {
+          network = {
+            network = libvirt_network.windows_network.name
+          }
+        }
+        model = {
+          type = "virtio"
         }
       }
-      model = {
-        type = "virtio"
+    ]
+    graphics = [
+      {
+        spice = {
+          auto_port = true
+          listen    = "address"
+        }
       }
-    }
-  ]
-  graphics = [ 
-    {
-      spice = {
-        auto_port = true
-        listen = "address"
-      }
-    } 
-  ]
+    ]
   }
 }

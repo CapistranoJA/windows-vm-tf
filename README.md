@@ -32,4 +32,6 @@ The VM will also serve as a Terraform practice environment, allowing me to exper
 
 The location of pool is in: `/data/lib/libvirt/images/windows-11/`
 
-####
+#### Volume
+
+`qcow2` was selected since it does not take up 80GB instantly, and scaling the volume is a possibility considering the VM will be used for Windows-related tasks/work (which is probably a lot of time, considering my work relies on niche proprietary windows apps)

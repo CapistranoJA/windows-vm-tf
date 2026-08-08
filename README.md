@@ -35,3 +35,14 @@ The location of pool is in: `/data/lib/libvirt/images/windows-11/`
 #### Volume
 
 `qcow2` was selected since it does not take up 80GB instantly, and scaling the volume is a possibility considering the VM will be used for Windows-related tasks/work (which is probably a lot of time, considering my work relies on niche proprietary windows apps)
+
+#### Network
+
+Created the homelab network that windows will use. This network will also be used by other projects as well. The network created is isolated from the default libvirt network so my main project portfolio can reuse it. Planning on making it a module or data source soon.
+
+
+#### Domain
+
+This was the hardest part of this practice lol. The `dmacvicar/libvirt` provider basically mirrors raw libvirt XML, so half the fields require knowing QEMU/libvirt internals (ACPI, UEFI/NVRAM, machine types) that are very new knowledge to me. For version 0.9.8, `libvirt_domain` resource's documentation in [registry.terraform.io](https://registry.terraform.io/providers/dmacvicar/libvirt/latest/docs/resources/domain) (By the time this was made) was incomplete and missing nested attributes. `terraform providers schema -json` ended up as the actual source of truth. 
+
+Still it worked, and once `terraform apply` was executed, virt-manager shows the VM is there.

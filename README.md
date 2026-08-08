@@ -22,3 +22,14 @@ The VM will also serve as a Terraform practice environment, allowing me to exper
 * **Hypervisor** : QEMU/KVM
 * **Provider** : dmacvicar/libvirt
 
+### Terraform 
+
+#### Provider
+
+`dmacvicar/libvirt` is used since it supports QEMU/KVM.
+
+#### Pool
+
+The location of pool is in: `/data/lib/libvirt/images/windows-11/`
+
+####

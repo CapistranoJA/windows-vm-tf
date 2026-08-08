@@ -54,3 +54,109 @@ resource "libvirt_network" "windows_network" {
     }
   }]
 }
+
+resource "libvirt_domain" "windows_vm" {
+  name = var.vm_name
+  memory = var.memory
+  memory_unit = "MiB"
+  vcpu = var.vcpus
+  type = "kvm"
+
+  autostart = false
+  
+  cpu ={
+    mode = "host-passthrough"
+  }
+
+  os = {
+    type = "hvm"
+    type_arch = "x86_64"
+    type_machine = "q35"
+
+    firmware = "efi"
+    loader = "/usr/share/OVMF/OVMF_CODE.fd"
+    loader_readonly = "yes"
+    loader_type = "pflash"
+
+    nv_ram ={
+      nv_ram = "/var/lib/libvirt/qemu/nvram/${var.vm_name}_VARS.fd"
+      template = "/usr/share/OVMF/OVMF_VARS.fd"
+    }
+ 
+    boot_devices = [
+      {
+        dev = "hd"
+      },
+      {
+        dev = "cdrom"
+      }
+    ]
+  }
+
+  features = {
+    acpi = true
+  }
+  
+  devices = {
+    disks = [ {
+      device = "disk"
+      source = {
+        volume = {
+          pool = libvirt_pool.windows.name
+          volume = libvirt_volume.windows_disk.name
+        }
+      }
+      target = {
+         dev = "vda", 
+         bus = "virtio"
+      }
+    }, 
+    {
+      device = "cdrom"
+      read_only = true
+      source = {
+        file = {
+          file = var.windows_iso_path
+        }
+      }
+      target = {
+        dev = "sda"
+        bus = "sata"
+      }
+    },
+    {
+      device = "cdrom"
+      read_only = true
+      source = {
+        file = {
+          file = var.virtio_iso_path
+        }
+      }
+      target = {
+        dev = "sdb"
+        bus = "sata"
+      }
+    }
+    ]
+  interfaces = [
+    {
+      source = {
+        network = {
+          network = libvirt_network.windows_network.name
+        }
+      }
+      model = {
+        type = "virtio"
+      }
+    }
+  ]
+  graphics = [ 
+    {
+      spice = {
+        auto_port = true
+        listen = "address"
+      }
+    } 
+  ]
+  }
+}

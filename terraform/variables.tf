@@ -54,3 +54,15 @@ variable "network_cidr" {
   description = "CIDR for the windows VM"
   type = string
 }
+
+variable "memory" {
+  description = "RAM size for the virtual machine in MB"
+  type = number
+  default = 16384
+}
+
+variable "vcpus" {
+  description = "Number of virtual CPUs"
+  type = number
+  default = 4
+}

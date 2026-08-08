@@ -27,3 +27,13 @@ variable "disk_size" {
   type = number
   default = 80
 }
+
+variable "windows_iso_path" {
+  description = "Path to the Windows ISO file"
+  type = string
+}
+
+variable "virtio_iso_path" {
+  description = "Path to the VirtIO ISO file"
+  type = string
+}

@@ -43,6 +43,8 @@ Created the homelab network that windows will use. This network will also be use
 
 #### Domain
 
-This was the hardest part of this practice lol. The `dmacvicar/libvirt` provider basically mirrors raw libvirt XML, so half the fields require knowing QEMU/libvirt internals (ACPI, UEFI/NVRAM, machine types) that are very new knowledge to me. For version 0.9.8, `libvirt_domain` resource's documentation in [registry.terraform.io](https://registry.terraform.io/providers/dmacvicar/libvirt/latest/docs/resources/domain) (By the time this was made) was incomplete and missing nested attributes. `terraform providers schema -json` ended up as the actual source of truth. 
+This was the hardest part of this practice lol. The `dmacvicar/libvirt` provider basically mirrors raw libvirt XML, so half the fields require knowing QEMU/libvirt internals like ACPI, UEFI/NVRAM, and machine types, which were all very new concepts to me.
 
-Still it worked, and once `terraform apply` was executed, virt-manager shows the VM is there.
+For version `0.9.8`, the `libvirt_domain` resource documentation in [registry.terraform.io](https://registry.terraform.io/providers/dmacvicar/libvirt/latest/docs/resources/domain) was incomplete at the time this was written, with some of the nested attributes missing documentation. `terraform providers schema -json` ended up being the actual source of truth more than once.
+
+Still it worked. Once `terraform apply` was executed and finished, virt-manager showed the VM is there.

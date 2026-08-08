@@ -37,3 +37,20 @@ variable "virtio_iso_path" {
   description = "Path to the VirtIO ISO file"
   type = string
 }
+
+variable "network_name" {
+  description = "Name of the libvirt network"
+  type = string
+  default = "libvirt-homelab-nat"
+}
+
+variable "network_domain" {
+  description = "Domain name for the libvirt network"
+  type = string
+  default = "homelab.local"
+}
+
+variable "network_cidr" {
+  description = "CIDR for the windows VM"
+  type = string
+}

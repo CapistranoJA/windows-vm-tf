@@ -25,7 +25,7 @@ variable "vm_name" {
 variable "disk_size" {
   description = "Size of the virtual machine disk in GB"
   type        = number
-  default     = 80
+  default     = 85899345920
 }
 
 variable "windows_iso_path" {

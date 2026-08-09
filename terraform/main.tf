@@ -16,7 +16,7 @@ resource "libvirt_volume" "windows_disk" {
   name          = "${var.vm_name}.qcow2"
   pool          = libvirt_pool.windows.name
   capacity      = var.disk_size
-  capacity_unit = "GiB"
+  #capacity_unit = "GiB"
   target = {
     format = {
       type = "qcow2"
@@ -74,10 +74,10 @@ resource "libvirt_domain" "windows_vm" {
     type_machine = "q35"
 
     firmware        = "efi"
-    loader          = "/usr/share/OVMF/OVMF_CODE.fd"
+    loader          = "/usr/share/edk2/ovmf/OVMF_CODE.secboot.fd"
     loader_readonly = "yes"
     loader_type     = "pflash"
-
+    loader_secure   = "yes"
     nv_ram = {
       nv_ram   = "/var/lib/libvirt/qemu/nvram/${var.vm_name}_VARS.fd"
       template = "/usr/share/edk2/ovmf/OVMF_VARS.fd"
@@ -85,10 +85,10 @@ resource "libvirt_domain" "windows_vm" {
 
     boot_devices = [
       {
-        dev = "hd"
+        dev = "cdrom"
       },
       {
-        dev = "cdrom"
+        dev = "hd"
       }
     ]
   }
@@ -98,8 +98,18 @@ resource "libvirt_domain" "windows_vm" {
   }
 
   devices = {
+    inputs = [
+    {
+      type = "tablet"
+      bus  = "usb"
+    }
+  ]
     disks = [{
       device = "disk"
+      driver = {
+        name = "qemu"
+        type = "qcow2"
+      }
       source = {
         volume = {
           pool   = libvirt_pool.windows.name
@@ -154,7 +164,16 @@ resource "libvirt_domain" "windows_vm" {
       {
         spice = {
           auto_port = true
-          listen    = "address"
+        }
+      }
+    ]
+    tpms = [
+      {
+        model = "tpm-crb"
+        backend = {
+          emulator = {
+            version = "2.0"
+          }
         }
       }
     ]

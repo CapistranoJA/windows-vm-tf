@@ -33,12 +33,6 @@ resource "libvirt_network" "windows_network" {
 
   forward = {
     mode = "nat"
-    nat = {
-      addresses = [{
-        start = cidrhost(var.network_cidr, 1)
-        end   = cidrhost(var.network_cidr, 254)
-      }]
-    }
   }
   ips = [{
     family  = "ipv4"
